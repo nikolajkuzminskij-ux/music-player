@@ -61,16 +61,26 @@
 
         .player-main {
             padding: 20px;
+            position: relative;
+        }
+
+        .album-container {
+            position: relative;
+            width: 220px;
+            height: 220px;
+            margin: 0 auto 30px;
         }
 
         .album-art {
             width: 200px;
             height: 200px;
-            margin: 0 auto 20px;
             border-radius: 50%;
             overflow: hidden;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            position: relative;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 2;
         }
 
         .album-art img {
@@ -90,6 +100,33 @@
             box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
         }
 
+        .progress-ring {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 220px;
+            height: 220px;
+            z-index: 1;
+        }
+
+        .progress-ring-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.1);
+            stroke-width: 4;
+        }
+
+        .progress-ring-fill {
+            fill: none;
+            stroke: var(--accent-color);
+            stroke-width: 4;
+            stroke-linecap: round;
+            stroke-dasharray: 345.4;
+            stroke-dashoffset: 345.4;
+            transition: stroke-dashoffset 0.1s linear;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+
         .track-info {
             text-align: center;
             margin-bottom: 20px;
@@ -105,33 +142,12 @@
             opacity: 0.7;
         }
 
-        .progress-container {
-            margin-bottom: 25px;
-            position: relative;
-        }
-
         .progress-time {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 5px;
+            margin-bottom: 20px;
             font-size: 0.8rem;
             opacity: 0.7;
-        }
-
-        .progress-bar {
-            height: 6px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .progress {
-            height: 100%;
-            background: var(--accent-color);
-            width: 0%;
-            border-radius: 3px;
-            transition: width 0.1s linear;
         }
 
         .controls {
@@ -291,6 +307,30 @@
             border-radius: 2px;
         }
 
+        .file-input-container {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .file-input-label {
+            display: inline-block;
+            padding: 8px 15px;
+            background: rgba(231, 76, 60, 0.2);
+            color: var(--accent-color);
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: var(--transition);
+        }
+
+        .file-input-label:hover {
+            background: rgba(231, 76, 60, 0.3);
+        }
+
+        .file-input {
+            display: none;
+        }
+
         /* Анимация вращения альбома */
         @keyframes rotate {
             from {
@@ -309,55 +349,27 @@
             animation-play-state: paused;
         }
 
-        /* Полукруглый прогресс-бар для компактного режима */
-        .compact-progress {
-            display: none;
-            position: relative;
-            width: 200px;
-            height: 100px;
-            margin: 0 auto 20px;
-        }
-
-        .compact-progress svg {
-            width: 200px;
-            height: 100px;
-            transform: rotate(-90deg);
-        }
-
-        .compact-progress-bg {
-            fill: none;
-            stroke: rgba(255, 255, 255, 0.1);
-            stroke-width: 5;
-        }
-
-        .compact-progress-fill {
-            fill: none;
-            stroke: var(--accent-color);
-            stroke-width: 5;
-            stroke-dasharray: 282.6;
-            stroke-dashoffset: 282.6;
-            transition: stroke-dashoffset 0.1s linear;
-        }
-
-        .compact-time {
-            position: absolute;
-            top: 50%;
-            left: 0;
-            width: 100%;
-            text-align: center;
-            transform: translateY(-50%);
-            font-size: 0.9rem;
-        }
-
         /* Адаптивность */
         @media (max-width: 480px) {
             .audio-player {
                 max-width: 100%;
             }
             
+            .album-container {
+                width: 180px;
+                height: 180px;
+            }
+            
             .album-art {
-                width: 150px;
-                height: 150px;
+                width: 160px;
+                height: 160px;
+                top: 10px;
+                left: 10px;
+            }
+            
+            .progress-ring {
+                width: 180px;
+                height: 180px;
             }
             
             .control-btn {
@@ -370,25 +382,6 @@
                 height: 55px;
             }
         }
-
-        /* Стили для компактного режима */
-        .compact-mode .album-art {
-            width: 120px;
-            height: 120px;
-            margin-bottom: 15px;
-        }
-
-        .compact-mode .progress-container {
-            display: none;
-        }
-
-        .compact-mode .compact-progress {
-            display: block;
-        }
-
-        .compact-mode .controls {
-            margin-bottom: 15px;
-        }
     </style>
 </head>
 <body>
@@ -399,31 +392,26 @@
         </div>
         
         <div class="player-main">
-            <div class="album-art">
-                <img src="https://via.placeholder.com/300" alt="Album Art" id="albumArt">
-            </div>
-            
-            <div class="compact-progress">
-                <svg viewBox="0 0 100 50">
-                    <path class="compact-progress-bg" d="M 10,50 A 40,40 0 1 1 90,50" />
-                    <path class="compact-progress-fill" d="M 10,50 A 40,40 0 1 1 90,50" />
-                </svg>
-                <div class="compact-time" id="compactTime">0:00 / 0:00</div>
-            </div>
-            
-            <div class="progress-container">
-                <div class="progress-time">
-                    <span id="currentTime">0:00</span>
-                    <span id="totalTime">0:00</span>
+            <div class="album-container">
+                <div class="album-art">
+                    <img src="https://via.placeholder.com/300/1a1a2e/e74c3c?text=ALBUM" alt="Album Art" id="albumArt">
                 </div>
-                <div class="progress-bar" id="progressBar">
-                    <div class="progress" id="progress"></div>
+                <div class="progress-ring">
+                    <svg viewBox="0 0 100 100">
+                        <circle class="progress-ring-bg" cx="50" cy="50" r="45" />
+                        <circle class="progress-ring-fill" cx="50" cy="50" r="45" />
+                    </svg>
                 </div>
             </div>
             
             <div class="track-info">
-                <div class="track-title" id="trackTitle">Track Title</div>
-                <div class="track-artist" id="trackArtist">Artist Name</div>
+                <div class="track-title" id="trackTitle">Let You Down</div>
+                <div class="track-artist" id="trackArtist">NF</div>
+            </div>
+            
+            <div class="progress-time">
+                <span id="currentTime">0:00</span>
+                <span id="totalTime">3:16</span>
             </div>
             
             <div class="controls">
@@ -445,6 +433,11 @@
                 </div>
             </div>
             
+            <div class="file-input-container">
+                <label for="audioFile" class="file-input-label">+ Добавить треки</label>
+                <input type="file" id="audioFile" class="file-input" accept="audio/*" multiple>
+            </div>
+            
             <div class="playlist-toggle">
                 <button class="toggle-btn" id="togglePlaylist">PLAYLIST ▼</button>
             </div>
@@ -464,12 +457,11 @@
                 this.currentTrackIndex = 0;
                 this.isPlaying = false;
                 this.volume = 0.7;
-                this.isCompactMode = false;
                 
                 // Инициализация элементов DOM
                 this.initializeDOM();
-                // Загрузка плейлиста
-                this.loadPlaylist();
+                // Загрузка плейлиста по умолчанию
+                this.loadDefaultPlaylist();
                 // Настройка обработчиков событий
                 this.setupEventListeners();
                 // Установка начального состояния
@@ -481,8 +473,6 @@
                 this.playBtn = document.getElementById('playBtn');
                 this.prevBtn = document.getElementById('prevBtn');
                 this.nextBtn = document.getElementById('nextBtn');
-                this.progress = document.getElementById('progress');
-                this.progressBar = document.getElementById('progressBar');
                 this.currentTimeEl = document.getElementById('currentTime');
                 this.totalTimeEl = document.getElementById('totalTime');
                 this.trackTitle = document.getElementById('trackTitle');
@@ -492,52 +482,36 @@
                 this.togglePlaylistBtn = document.getElementById('togglePlaylist');
                 this.volumeBar = document.getElementById('volumeBar');
                 this.volumeLevel = document.getElementById('volumeLevel');
-                this.compactProgressFill = document.querySelector('.compact-progress-fill');
-                this.compactTime = document.getElementById('compactTime');
-                this.audioPlayer = document.getElementById('audioPlayer');
+                this.progressRingFill = document.querySelector('.progress-ring-fill');
+                this.audioFileInput = document.getElementById('audioFile');
                 
                 // Установка начального уровня громкости
                 this.audio.volume = this.volume;
                 this.updateVolumeDisplay();
             }
 
-            // Загрузка плейлиста
-            loadPlaylist() {
-                // В реальном приложении здесь будет загрузка с сервера
+            // Загрузка плейлиста по умолчанию
+            loadDefaultPlaylist() {
                 this.playlist = [
                     {
                         title: "Let You Down",
                         artist: "NF",
                         duration: "03:16",
-                        src: "https://example.com/music/let-you-down.mp3",
+                        src: "https://raw.githubusercontent.com/himalayasingh/music-player-1/master/music/2.mp3",
                         cover: "https://via.placeholder.com/300/1a1a2e/e74c3c?text=NF"
                     },
                     {
                         title: "Intro III",
                         artist: "Outcast",
                         duration: "04:29",
-                        src: "https://example.com/music/intro-iii.mp3",
+                        src: "https://raw.githubusercontent.com/himalayasingh/music-player-1/master/music/1.mp3",
                         cover: "https://via.placeholder.com/300/1a1a2e/3498db?text=Outcast"
                     },
                     {
                         title: "10 Feet Down",
                         artist: "NF",
                         duration: "03:37",
-                        src: "https://example.com/music/10-feet-down.mp3",
-                        cover: "https://via.placeholder.com/300/1a1a2e/e74c3c?text=NF"
-                    },
-                    {
-                        title: "Green Lights",
-                        artist: "NF",
-                        duration: "03:02",
-                        src: "https://example.com/music/green-lights.mp3",
-                        cover: "https://via.placeholder.com/300/1a1a2e/e74c3c?text=NF"
-                    },
-                    {
-                        title: "Dreams",
-                        artist: "NF",
-                        duration: "03:42",
-                        src: "https://example.com/music/dreams.mp3",
+                        src: "https://raw.githubusercontent.com/himalayasingh/music-player-1/master/music/3.mp3",
                         cover: "https://via.placeholder.com/300/1a1a2e/e74c3c?text=NF"
                     }
                 ];
@@ -585,13 +559,6 @@
                     this.nextTrack();
                 });
 
-                // Прогресс-бар
-                this.progressBar.addEventListener('click', (e) => {
-                    const rect = this.progressBar.getBoundingClientRect();
-                    const percent = (e.clientX - rect.left) / rect.width;
-                    this.seek(percent);
-                });
-
                 // Переключение плейлиста
                 this.togglePlaylistBtn.addEventListener('click', () => {
                     this.togglePlaylist();
@@ -602,6 +569,11 @@
                     const rect = this.volumeBar.getBoundingClientRect();
                     const percent = (e.clientX - rect.left) / rect.width;
                     this.setVolume(percent);
+                });
+
+                // Загрузка файлов
+                this.audioFileInput.addEventListener('change', (e) => {
+                    this.handleFileUpload(e.target.files);
                 });
 
                 // События аудио
@@ -623,13 +595,35 @@
                     this.handleError('Ошибка загрузки аудио');
                 });
 
-                // Переключение компактного режима при изменении размера окна
-                window.addEventListener('resize', () => {
-                    this.checkCompactMode();
+                // Клик по прогресс-рингу для перемотки
+                document.querySelector('.progress-ring').addEventListener('click', (e) => {
+                    this.handleProgressRingClick(e);
                 });
+            }
 
-                // Первоначальная проверка компактного режима
-                this.checkCompactMode();
+            // Обработка клика по прогресс-рингу для перемотки
+            handleProgressRingClick(e) {
+                const rect = e.currentTarget.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                
+                // Вычисляем угол клика относительно центра
+                const clickX = e.clientX - centerX;
+                const clickY = e.clientY - centerY;
+                
+                // Вычисляем угол в радианах и градусах
+                let angle = Math.atan2(clickY, clickX) * (180 / Math.PI);
+                
+                // Нормализуем угол от 0 до 360
+                if (angle < 0) angle += 360;
+                
+                // Учитываем только нижнюю половину (от 0 до 180 градусов)
+                if (angle > 180) return;
+                
+                // Преобразуем угол в процент (0-100%)
+                const percent = angle / 180;
+                
+                this.seek(percent);
             }
 
             // Воспроизведение/пауза
@@ -719,13 +713,10 @@
             // Обновление прогресса воспроизведения
             updateProgress() {
                 if (this.audio.duration) {
-                    const percent = (this.audio.currentTime / this.audio.duration) * 100;
-                    this.progress.style.width = `${percent}%`;
-                    
-                    // Обновление полукруглого прогресс-бара
-                    const circumference = 282.6; // Примерное значение для полукруга
-                    const offset = circumference - (percent / 100) * circumference;
-                    this.compactProgressFill.style.strokeDashoffset = offset;
+                    const percent = (this.audio.currentTime / this.audio.duration);
+                    const circumference = 345.4; // 2 * π * r (r=55)
+                    const offset = circumference - (percent * circumference);
+                    this.progressRingFill.style.strokeDashoffset = offset;
                 }
             }
 
@@ -734,7 +725,6 @@
                 if (this.audio.duration) {
                     this.currentTimeEl.textContent = this.formatTime(this.audio.currentTime);
                     this.totalTimeEl.textContent = this.formatTime(this.audio.duration);
-                    this.compactTime.textContent = `${this.formatTime(this.audio.currentTime)} / ${this.formatTime(this.audio.duration)}`;
                 }
             }
 
@@ -759,6 +749,7 @@
                 this.trackTitle.textContent = track.title;
                 this.trackArtist.textContent = track.artist;
                 this.albumArt.src = track.cover;
+                this.totalTimeEl.textContent = track.duration;
                 
                 this.renderPlaylist();
                 this.updateTimeDisplay();
@@ -781,15 +772,30 @@
                 this.albumArt.classList.add('paused');
             }
 
-            // Проверка и переключение компактного режима
-            checkCompactMode() {
-                const width = window.innerWidth;
-                if (width < 500 && !this.isCompactMode) {
-                    this.audioPlayer.classList.add('compact-mode');
-                    this.isCompactMode = true;
-                } else if (width >= 500 && this.isCompactMode) {
-                    this.audioPlayer.classList.remove('compact-mode');
-                    this.isCompactMode = false;
+            // Обработка загрузки файлов
+            handleFileUpload(files) {
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    if (file.type.startsWith('audio/')) {
+                        const url = URL.createObjectURL(file);
+                        const newTrack = {
+                            title: file.name.replace(/\.[^/.]+$/, ""), // Удаляем расширение
+                            artist: "Локальный файл",
+                            duration: "--:--",
+                            src: url,
+                            cover: "https://via.placeholder.com/300/1a1a2e/9b59b6?text=LOCAL"
+                        };
+                        
+                        this.playlist.push(newTrack);
+                    }
+                }
+                
+                this.renderPlaylist();
+                
+                // Если это первый трек, начинаем воспроизведение
+                if (this.playlist.length === files.length) {
+                    this.currentTrackIndex = 0;
+                    this.updatePlayer();
                 }
             }
 
