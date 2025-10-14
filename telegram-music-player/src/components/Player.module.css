@@ -1,0 +1,94 @@
+.player {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  padding: 2rem;
+  text-align: center;
+  position: relative;
+}
+
+.nowPlaying {
+  margin-bottom: 2rem;
+}
+.nowPlaying span {
+  font-size: 0.8rem;
+  color: #00c6ff; /* Бирюзовый акцентный цвет */
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.nowPlaying h2 {
+  font-size: 1.5rem;
+  font-weight: 300;
+  margin-top: 0.5rem;
+}
+
+.artwork {
+  width: 280px;
+  height: 280px;
+  margin: 2rem 0;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #00c6ff, #0072ff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 30px rgba(0, 198, 255, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.vinyl {
+  width: 90%;
+  height: 90%;
+  border-radius: 50%;
+  background: 
+    radial-gradient(circle at 30% 30%, #333 10%, transparent 10.5%),
+    radial-gradient(circle at 70% 70%, #333 10%, transparent 10.5%),
+    repeating-radial-gradient(#000 0%, #000 4px, #222 4px, #222 8px);
+  animation: rotate 20s linear infinite;
+  animation-play-state: paused;
+}
+/* Анимация вращения винила при воспроизведении */
+.playing .vinyl {
+  animation-play-state: running;
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.trackInfo {
+  margin-bottom: 2rem;
+  width: 100%;
+}
+.trackTitle {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.trackArtist {
+  font-size: 1rem;
+  color: #aaa;
+}
+
+.playlistButton {
+  background: transparent;
+  border: 1px solid #00c6ff;
+  color: #00c6ff;
+  padding: 0.75rem 2rem;
+  border-radius: 25px;
+  margin-top: 2rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+}
+.playlistButton:hover {
+  background: rgba(0, 198, 255, 0.1);
+}
